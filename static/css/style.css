@@ -1,0 +1,408 @@
+/* ═══════════════════════════════════════════════
+   Smart Crop Advisor — Custom Styles
+   style.css
+   ═══════════════════════════════════════════════ */
+
+/* ── CSS Variables ───────────────────────────── */
+:root {
+  --forest-400: #4ade80;
+  --forest-500: #22c55e;
+  --forest-600: #16a34a;
+  --forest-700: #15803d;
+  --forest-900: #14532d;
+  --earth-400: #facc15;
+  --soil-400:  #e09a4d;
+  --glass-bg:  rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Global Scroll Behavior ─────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── Selection color ────────────────────────── */
+::selection {
+  background: var(--forest-500);
+  color: white;
+}
+
+/* ══════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════ */
+.nav-glass {
+  /* Default: transparent on top of hero */
+  background: transparent;
+  transition: background var(--transition-base), box-shadow var(--transition-base), backdrop-filter var(--transition-base);
+}
+
+/* Scrolled state — glassmorphism kicks in */
+#navbar.scrolled .nav-glass {
+  background: rgba(15, 50, 25, 0.75);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+}
+
+/* Dark mode scrolled */
+.dark #navbar.scrolled .nav-glass {
+  background: rgba(5, 20, 10, 0.85);
+}
+
+/* ── Nav links ──────────────────────────────── */
+.nav-link {
+  padding: 0.4rem 0.85rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  transition: color var(--transition-base), background var(--transition-base);
+  white-space: nowrap;
+}
+.nav-link:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ── Mobile nav links ───────────────────────── */
+.mobile-menu-inner {
+  background: rgba(15, 50, 25, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.dark .mobile-menu-inner {
+  background: rgba(5, 15, 5, 0.95);
+}
+
+.mobile-nav-link {
+  display: block;
+  padding: 0.875rem 1.25rem;
+  font-size: 0.925rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: color var(--transition-base), background var(--transition-base), padding-left var(--transition-base);
+}
+.mobile-nav-link:last-child {
+  border-bottom: none;
+}
+.mobile-nav-link:hover {
+  color: var(--forest-400);
+  padding-left: 1.75rem;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* ── Language dropdown menu ─────────────────── */
+.lang-menu {
+  background: rgba(20, 83, 45, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.dark .lang-menu {
+  background: rgba(5, 20, 10, 0.97);
+}
+.lang-option {
+  color: rgba(255, 255, 255, 0.8);
+  transition: background var(--transition-base), color var(--transition-base);
+}
+.lang-option:hover {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--forest-400);
+}
+
+/* ══════════════════════════════════════════════
+   HERO SECTION
+══════════════════════════════════════════════ */
+
+/* Background image using a lush farm photo from Unsplash */
+.hero-bg {
+  background-image: url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1920&q=80');
+  transform: scale(1.03);
+  transition: transform 8s ease-out;
+}
+.hero-bg.loaded { transform: scale(1); }
+
+/* Floating orb animation */
+@keyframes float-orb {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%       { transform: translateY(-20px) scale(1.05); }
+}
+.orb-1 { animation: float-orb 8s ease-in-out infinite; }
+.orb-2 { animation: float-orb 11s ease-in-out infinite reverse; }
+
+/* Hero badge */
+.hero-badge {
+  animation: fadeInDown 0.7s ease both;
+}
+
+/* Hero title */
+.hero-title {
+  animation: fadeInUp 0.8s ease 0.15s both;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Hero tagline */
+.hero-tagline {
+  animation: fadeInUp 0.8s ease 0.3s both;
+}
+
+/* Hero CTA */
+.hero-cta {
+  animation: fadeInUp 0.8s ease 0.45s both;
+}
+
+/* Scroll indicator */
+.hero-scroll {
+  animation: fadeInUp 0.8s ease 0.6s both;
+}
+
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.4; }
+  50%       { transform: translateY(6px); opacity: 0.8; }
+}
+.scroll-chevron { animation: scrollBounce 1.8s ease-in-out infinite; }
+
+/* ── CTA Buttons ─────────────────────────────── */
+.cta-primary {
+  background: linear-gradient(135deg, var(--forest-500) 0%, var(--forest-600) 100%);
+  color: white;
+  box-shadow: 0 8px 32px rgba(22, 163, 74, 0.45), inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.cta-primary:hover {
+  background: linear-gradient(135deg, #16a34a 0%, #166534 100%);
+  box-shadow: 0 12px 40px rgba(22, 163, 74, 0.6);
+  transform: translateY(-2px);
+}
+.cta-primary:active { transform: translateY(0); }
+
+.cta-secondary {
+  background: var(--glass-bg);
+  color: white;
+  border: 1.5px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.cta-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+/* ══════════════════════════════════════════════
+   FEATURES SECTION — Background
+══════════════════════════════════════════════ */
+.features-bg {
+  background-image: url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1920&q=70');
+}
+
+/* ── Motivation chips ───────────────────────── */
+.motivation-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1.25rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1rem;
+  font-weight: 500;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ── Feature Cards ──────────────────────────── */
+.feature-card {
+  position: relative;
+  padding: 1.75rem;
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  transition: transform var(--transition-base), box-shadow var(--transition-base), background var(--transition-base), border-color var(--transition-base);
+  cursor: default;
+  overflow: hidden;
+}
+.feature-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(74, 222, 128, 0.2);
+  background: rgba(255, 255, 255, 0.10);
+  border-color: rgba(74, 222, 128, 0.25);
+}
+
+.feature-icon-wrap {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 0.875rem;
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  transition: transform var(--transition-base);
+}
+.feature-card:hover .feature-icon-wrap {
+  transform: scale(1.1) rotate(-4deg);
+}
+
+.feature-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.5rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.feature-desc {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.65;
+  margin-bottom: 1.25rem;
+}
+
+.feature-arrow {
+  color: var(--forest-400);
+  transition: transform var(--transition-base), color var(--transition-base);
+}
+.feature-card:hover .feature-arrow {
+  transform: translateX(5px);
+  color: var(--earth-400);
+}
+
+/* ══════════════════════════════════════════════
+   TESTIMONIAL CARDS
+══════════════════════════════════════════════ */
+.testimonial-card {
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+.dark .testimonial-card {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+}
+.testimonial-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+}
+.dark .testimonial-card:hover {
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+}
+
+/* ══════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════ */
+.footer-link {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  transition: color var(--transition-base), padding-left var(--transition-base);
+  display: inline-block;
+}
+.footer-link:hover {
+  color: var(--forest-400);
+  padding-left: 0.25rem;
+}
+
+.social-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.625rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-base), background var(--transition-base), transform var(--transition-base);
+}
+.social-icon:hover {
+  color: var(--forest-400);
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(74, 222, 128, 0.25);
+  transform: translateY(-2px);
+}
+
+/* ══════════════════════════════════════════════
+   SCROLL ANIMATIONS
+══════════════════════════════════════════════ */
+.fade-up {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ══════════════════════════════════════════════
+   KEYFRAMES
+══════════════════════════════════════════════ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ══════════════════════════════════════════════
+   STAT CARDS
+══════════════════════════════════════════════ */
+.stat-card {
+  padding: 1.25rem 0.5rem;
+}
+
+/* ══════════════════════════════════════════════
+   CUSTOM SCROLLBAR
+══════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--forest-600);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--forest-500); }
+
+/* ══════════════════════════════════════════════
+   SMOOTH DARK MODE TRANSITIONS
+══════════════════════════════════════════════ */
+*, *::before, *::after {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.15s ease;
+}
+/* But not for transitions that interfere with animations */
+.hero-title, .hero-tagline, .hero-badge, .hero-cta,
+.orb-1, .orb-2, .scroll-chevron {
+  transition: none;
+}
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE UTILITIES
+══════════════════════════════════════════════ */
+
+/* Ensure hero full height on all devices */
+#hero { min-height: 100svh; }
+
+/* Fix nav overlap on mobile */
+@media (max-width: 1023px) {
+  .hero-title { font-size: clamp(2.25rem, 10vw, 3.5rem); }
+}
+
+/* Tablet adjustments */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .feature-card { padding: 1.5rem; }
+}
