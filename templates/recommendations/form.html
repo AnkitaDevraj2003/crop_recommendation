@@ -1,0 +1,523 @@
+
+{% extends "base.html" %}
+
+
+{% block title %}Get Crop Recommendation – Smart Crop Advisor{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* ── Form page background ── */
+  .form-page-bg {
+    background-image:
+      linear-gradient(135deg, rgba(10,28,12,.92) 0%, rgba(26,58,31,.85) 50%, rgba(10,28,12,.95) 100%),
+      url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1800&q=80');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  /* ── Glassmorphism form card ── */
+  .form-card {
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.14);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow:
+      0 32px 80px rgba(0,0,0,.45),
+      0 0 0 1px rgba(255,255,255,.06) inset;
+  }
+
+  /* ── Input base style ── */
+  .form-input {
+    width: 100%;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 12px;
+    padding: 12px 16px 12px 44px;
+    color: #f0faf1;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .9rem;
+    transition: border-color .25s ease, background .25s ease, box-shadow .25s ease;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .form-input::placeholder { color: rgba(180,220,185,.45); }
+  .form-input:hover {
+    border-color: rgba(255,255,255,.28);
+    background: rgba(255,255,255,.09);
+  }
+  .form-input:focus {
+    border-color: rgba(200,135,42,.7);
+    background: rgba(200,135,42,.06);
+    box-shadow: 0 0 0 3px rgba(200,135,42,.18), 0 4px 16px rgba(0,0,0,.2);
+  }
+
+  /* Select arrow override */
+  .form-input.select-field {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23a3c4a8' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 38px;
+    cursor: pointer;
+  }
+  .form-input.select-field option {
+    background: #1a3a1f;
+    color: #e8f5e9;
+  }
+
+  /* ── Input wrapper (icon + field) ── */
+  .input-wrap { position: relative; }
+  .input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(160,210,165,.55);
+    font-size: .85rem;
+    pointer-events: none;
+    transition: color .25s;
+    z-index: 1;
+  }
+  .input-wrap:focus-within .input-icon { color: #c8872a; }
+
+  /* ── Label ── */
+  .form-label {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: rgba(180,220,185,.75);
+    margin-bottom: 7px;
+  }
+
+  /* ── Submit button ── */
+  .btn-submit {
+    background: linear-gradient(135deg, #c8872a 0%, #e09a3b 100%);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: .95rem;
+    letter-spacing: .02em;
+    padding: 14px 32px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 8px 28px rgba(200,135,42,.4);
+    transition: transform .25s ease, box-shadow .25s ease, filter .25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-submit::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,.12) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .btn-submit:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 14px 40px rgba(200,135,42,.55);
+    filter: brightness(1.06);
+  }
+  .btn-submit:active { transform: scale(.98); }
+
+  /* ── Back button ── */
+  .btn-back {
+    background: rgba(255,255,255,.07);
+    color: rgba(200,235,205,.85);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: .9rem;
+    padding: 13px 28px;
+    border-radius: 50px;
+    border: 1px solid rgba(255,255,255,.18);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background .25s ease, border-color .25s ease, transform .25s ease, color .25s ease;
+  }
+  .btn-back:hover {
+    background: rgba(255,255,255,.13);
+    border-color: rgba(255,255,255,.32);
+    color: #fff;
+    transform: translateY(-1px);
+  }
+
+  /* ── Section divider ── */
+  .form-divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,.1);
+    margin: 8px 0 24px;
+  }
+
+  /* ── Section heading ── */
+  .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #c8872a;
+    background: rgba(200,135,42,.12);
+    border: 1px solid rgba(200,135,42,.25);
+    padding: 4px 10px;
+    border-radius: 50px;
+    margin-bottom: 14px;
+  }
+
+  /* ── Fade-in card animation ── */
+  @keyframes cardReveal {
+    from { opacity:0; transform: translateY(28px) scale(.98); }
+    to   { opacity:1; transform: none; }
+  }
+  .card-reveal { animation: cardReveal .6s cubic-bezier(.22,1,.36,1) both; }
+
+  /* ── Progress dots ── */
+  .step-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,.2);
+    transition: background .3s, transform .3s;
+  }
+  .step-dot.active {
+    background: #c8872a;
+    transform: scale(1.3);
+  }
+  .step-dot.done { background: #3a7d44; }
+
+  /* ── Grain overlay ── */
+  .form-page-bg::before {
+    content: '';
+    position: fixed; inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: .5; z-index: 0;
+  }
+
+  /* ── Dark mode tweaks ── */
+  html.dark .form-input { color: #e8f5e9; }
+  html.dark .form-input:focus {
+    border-color: rgba(224,154,59,.75);
+    background: rgba(200,135,42,.07);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="form-page-bg pt-24 pb-16 px-4 sm:px-6 relative">
+
+  {# ── Decorative rings ── #}
+  <div class="pointer-events-none fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border border-white/4 z-0"></div>
+  <div class="pointer-events-none fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[460px] h-[460px] rounded-full border border-white/4 z-0"></div>
+
+  <div class="relative z-10 max-w-2xl mx-auto">
+
+    {# ── Page header ── #}
+    <div class="text-center mb-8 card-reveal">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-meadow/25 border border-meadow/40 text-green-200 text-xs font-semibold tracking-widest uppercase mb-5">
+        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+        AI Crop Analysis
+      </div>
+      <h1 class="font-display text-4xl sm:text-5xl font-black text-white leading-tight mb-3">
+        Find Your <span class="text-harvest">Best Crop</span>
+      </h1>
+      <p class="text-green-300 text-sm sm:text-base max-w-md mx-auto leading-relaxed">
+        Fill in your field details below and our AI will recommend the most profitable crops for your specific conditions.
+      </p>
+    </div>
+
+    {# ── Progress indicator ── #}
+    <div class="flex items-center justify-center gap-2 mb-8 card-reveal" style="animation-delay:.08s">
+      <div class="step-dot done"></div>
+      <div class="h-px w-8 bg-meadow/40"></div>
+      <div class="step-dot active"></div>
+      <div class="h-px w-8 bg-white/15"></div>
+      <div class="step-dot"></div>
+    </div>
+
+    {# ════════════ FORM CARD ════════════ #}
+    <div class="form-card rounded-3xl p-7 sm:p-10 card-reveal" style="animation-delay:.14s">
+
+      {# ── Error messages (Django messages framework) ── #}
+      {% if messages %}
+        <div class="mb-6">
+          {% for message in messages %}
+            <div class="flex items-center gap-3 px-4 py-3 rounded-xl mb-2
+              {% if message.tags == 'error' %}bg-red-500/15 border border-red-400/30 text-red-200
+              {% else %}bg-meadow/15 border border-meadow/30 text-green-200{% endif %}
+              text-sm">
+              <i class="fa-solid {% if message.tags == 'error' %}fa-triangle-exclamation text-red-400{% else %}fa-circle-check text-green-400{% endif %} flex-shrink-0"></i>
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <form method="POST" action="" novalidate>
+        {% csrf_token %}
+
+        <!-- ══════════════════════════════
+           SECTION 1 – Soil & Water
+        ══════════════════════════════ -->
+        <div class="mb-8">
+          <span class="section-tag">
+            <i class="fa-solid fa-layer-group text-xs"></i> Soil &amp; Water
+          </span>
+          <hr class="form-divider">
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+            {# Soil Type #}
+            <div>
+              <label for="soil_type" class="form-label">
+                <i class="fa-solid fa-mountain-sun mr-1 opacity-70"></i> Soil Type
+              </label>
+              <div class="input-wrap">
+                <i class="fa-solid fa-layer-group input-icon"></i>
+                <select
+                  id="soil_type"
+                  name="soil_type"
+                  class="form-input select-field"
+                  required
+                >
+                  <option value="" disabled selected>Select soil type…</option>
+                  <option value="alluvial"  {% if form_data.soil_type == 'alluvial'  %}selected{% endif %}>Alluvial</option>
+                  <option value="black"     {% if form_data.soil_type == 'black'     %}selected{% endif %}>Black</option>
+                  <option value="red"       {% if form_data.soil_type == 'red'       %}selected{% endif %}>Red</option>
+                  <option value="laterite"  {% if form_data.soil_type == 'laterite'  %}selected{% endif %}>Laterite</option>
+                  <option value="sandy"     {% if form_data.soil_type == 'sandy'     %}selected{% endif %}>Sandy</option>
+                  <option value="clay"      {% if form_data.soil_type == 'clay'      %}selected{% endif %}>Clay</option>
+                  <option value="loamy"     {% if form_data.soil_type == 'loamy'     %}selected{% endif %}>Loamy</option>
+                </select>
+              </div>
+            </div>
+
+            {# Water Availability #}
+            <div>
+              <label for="water_availability" class="form-label">
+                <i class="fa-solid fa-droplet mr-1 opacity-70"></i> Water Availability
+              </label>
+              <div class="input-wrap">
+                <i class="fa-solid fa-droplet input-icon"></i>
+                <select
+                  id="water_availability"
+                  name="water_availability"
+                  class="form-input select-field"
+                  required
+                >
+                  <option value="" disabled selected>Select availability…</option>
+                  <option value="continuous" {% if form_data.water_availability == 'continuous' %}selected{% endif %}>Continuous</option>
+                  <option value="seasonal"   {% if form_data.water_availability == 'seasonal'   %}selected{% endif %}>Seasonal</option>
+                  <option value="scarce"     {% if form_data.water_availability == 'scarce'     %}selected{% endif %}>Scarce</option>
+                </select>
+              </div>
+            </div>
+
+            {# Water Source – full width #}
+            <div class="sm:col-span-2">
+              <label for="water_source" class="form-label">
+                <i class="fa-solid fa-faucet mr-1 opacity-70"></i> Water Source
+              </label>
+              <div class="input-wrap">
+                <i class="fa-solid fa-faucet-drip input-icon"></i>
+                <input
+                  type="text"
+                  id="water_source"
+                  name="water_source"
+                  class="form-input"
+                  placeholder="e.g. Borewell, Canal, Rainwater, River…"
+                  value="{{ form_data.water_source|default:'' }}"
+                  required
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════
+           SECTION 2 – Location & Finance
+        ══════════════════════════════ -->
+        <div class="mb-8">
+          <span class="section-tag">
+            <i class="fa-solid fa-map-pin text-xs"></i> Location &amp; Finance
+          </span>
+          <hr class="form-divider">
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+            {# Location #}
+            <div>
+              <label for="location" class="form-label">
+                <i class="fa-solid fa-location-dot mr-1 opacity-70"></i> Location
+              </label>
+              <div class="input-wrap">
+                <i class="fa-solid fa-location-dot input-icon"></i>
+                <input
+                  type="text"
+                  id="location"
+                  name="location"
+                  class="form-input"
+                  placeholder="e.g. Nashik, Pune, Mysuru…"
+                  value="{{ form_data.location|default:'' }}"
+                  required
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+
+            {# Budget #}
+            <div>
+              <label for="budget" class="form-label">
+                <i class="fa-solid fa-indian-rupee-sign mr-1 opacity-70"></i> Budget (₹)
+              </label>
+              <div class="input-wrap">
+                <i class="fa-solid fa-indian-rupee-sign input-icon"></i>
+                <input
+                  type="number"
+                  id="budget"
+                  name="budget"
+                  class="form-input"
+                  placeholder="e.g. 50000.00"
+                  value="{{ form_data.budget|default:'' }}"
+                  min="0"
+                  step="0.01"
+                  required
+                />
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════
+           SECTION 3 – Crop Details
+        ══════════════════════════════ -->
+        <div class="mb-10">
+          <span class="section-tag">
+            <i class="fa-solid fa-seedling text-xs"></i> Crop Details
+          </span>
+          <hr class="form-divider">
+
+          <div class="grid grid-cols-1 gap-5">
+
+            {# Crop Duration #}
+            <div>
+              <label for="crop_duration" class="form-label">
+                <i class="fa-solid fa-calendar-days mr-1 opacity-70"></i> Crop Duration (days)
+              </label>
+              <div class="input-wrap">
+                <i class="fa-solid fa-calendar-days input-icon"></i>
+                <input
+                  type="number"
+                  id="crop_duration"
+                  name="crop_duration"
+                  class="form-input"
+                  placeholder="e.g. 90, 120, 180…"
+                  value="{{ form_data.crop_duration|default:'' }}"
+                  min="1"
+                  max="730"
+                  required
+                />
+              </div>
+              <p class="mt-1.5 text-xs text-green-500/70 pl-1">
+                <i class="fa-solid fa-circle-info mr-1"></i>
+                Enter the number of days you can dedicate to a crop cycle.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════
+           FORM ACTIONS
+        ══════════════════════════════ -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 border-t border-white/10">
+
+          {# Back button #}
+          <a href="/" class="btn-back w-full sm:w-auto justify-center">
+            <i class="fa-solid fa-arrow-left text-xs"></i>
+            Go Back
+          </a>
+
+          {# Submit button #}
+          <button type="submit" class="btn-submit w-full sm:w-auto flex items-center justify-center gap-2.5">
+            <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
+            Get Recommendation
+          </button>
+
+        </div>
+
+      </form>
+    </div>
+    {# /form card #}
+
+    {# ── Footer note ── #}
+    <p class="text-center text-green-600 text-xs mt-6 card-reveal" style="animation-delay:.22s">
+      <i class="fa-solid fa-lock text-harvest/60 mr-1"></i>
+      Your data is used only for recommendation purposes and is never shared.
+    </p>
+
+  </div>
+</div>
+
+{% endblock content %}
+
+
+{% block extra_js %}
+<script>
+/* ── Live field validation feedback ── */
+(function () {
+  const inputs = document.querySelectorAll('.form-input');
+
+  inputs.forEach(input => {
+    /* Show subtle valid state on blur when field has a value */
+    input.addEventListener('blur', function () {
+      if (this.value.trim() !== '' && this.checkValidity()) {
+        this.style.borderColor = 'rgba(58,125,68,.7)';
+        this.style.background  = 'rgba(58,125,68,.06)';
+        // find parent icon and colour it green
+        const icon = this.closest('.input-wrap')?.querySelector('.input-icon');
+        if (icon) icon.style.color = '#52a85e';
+      } else if (this.value.trim() === '') {
+        this.style.borderColor = '';
+        this.style.background  = '';
+      }
+    });
+
+    /* Reset on focus */
+    input.addEventListener('focus', function () {
+      this.style.borderColor = '';
+      this.style.background  = '';
+      const icon = this.closest('.input-wrap')?.querySelector('.input-icon');
+      if (icon) icon.style.color = '';
+    });
+  });
+
+  /* ── Submit button loading state ── */
+  const form   = document.querySelector('form');
+  const btnSub = document.querySelector('.btn-submit');
+
+  form && form.addEventListener('submit', function (e) {
+    /* Basic HTML5 validity check */
+    if (!form.checkValidity()) return;
+    btnSub.disabled = true;
+    btnSub.innerHTML = `
+      <svg class="animate-spin w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+      </svg>
+      Analysing…`;
+    btnSub.style.opacity = '.85';
+  });
+})();
+</script>
+{% endblock %}

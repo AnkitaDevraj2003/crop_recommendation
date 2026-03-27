@@ -1,6 +1,6 @@
 from django.db import models
 
-class recommendation(models.Model):
+class Recommendation(models.Model):
     soil_type = models.CharField(
         max_length=100,
     choices=[

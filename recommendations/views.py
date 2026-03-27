@@ -1,3 +1,6 @@
 from django.shortcuts import render
 
-# Create your views here.
+from .models import Recommendation
+
+def form_recommendation(request):
+    return render(request, 'recommendations/form.html')
